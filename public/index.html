@@ -73,7 +73,7 @@
       }
     }
     function toIndex (position, mapSize) {
-      return position.x * mapSize.x + position.y;
+      return position.x + position.y * mapSize.y;
     }
     function init() {
       state.robotPosition.y = 3;
@@ -101,6 +101,7 @@
       }
     }
     init();
+    render();
   </script>
 </body>
 
