@@ -4,7 +4,7 @@ const DIRECTION = {
 };
 var state = {
     robotPosition: {
-        x: 0, y: 0,
+        x: 0, y: 3,
     },
     mapSize: {
         x: 4, y: 4
@@ -12,47 +12,52 @@ var state = {
     toIndex: function () {
         return this.robotPosition.x + this.robotPosition.y * this.mapSize.y;
     },
-    move: function (newPosition) {
-        availablePosition = (newPosition) => {
-            if (newPosition.x >= 0 && newPosition.x < this.mapSize.x
-                && newPosition.y >= 0 && newPosition.y < this.mapSize.y
-            ) {
-                return true;
-            } else {
-                return false;
-            }
-        }
-        if (availablePosition(newPosition)) {
-            state.robotPosition = newPosition;
-            render();
-            return true;
-        } else {
-            return false;
-        }
+    history: [{x: 0, y: 3}]
+};
+availablePosition = (newPosition, mapSize) => {
+    if (newPosition.x >= 0 && newPosition.x < mapSize.x
+        && newPosition.y >= 0 && newPosition.y < mapSize.y
+    ) {
+        return true;
+    } else {
+        return false;
     }
 }
-function init() {
-    state.robotPosition.y = 3;
+function move(theState, newPosition) {
+    // let newState = Object.assign({}, theState, {robotPosition: newPosition});
+    let newState = {...theState, ...{
+        robotPosition: newPosition,
+        history: [...theState.history, newPosition]
+    }};
+    return newState;
 }
-function onCommandUp() {
-    var newPosition = { x: state.robotPosition.x, y: state.robotPosition.y - 1 };
-    var successful = state.move(newPosition);
-    if (!successful) {
+
+function init() {
+    // state.robotPosition.y = 3;
+}
+function onCommandUp(distance = 1) {
+    var {x: currentX, y: 
+        currentY} = state.robotPosition;
+    var newPosition = { x: currentX, y: currentY - distance };
+    var available = availablePosition(newPosition, state.mapSize);
+    if (!available) {
         // alert('Position [' + newPosition.x + ', ' + newPosition.y + '] is not invalid.');
         alert(`Position [${newPosition.x}, ${newPosition.y}] is not invalid.`);
     }
+    state = move(state, newPosition);
+    render(state);
 }
-function render() {
+function render(theState) {
     let gameBoardHtml = `
         <div class="game-map">
     `;
-    for (let row = 0; row < state.mapSize.y; row++) {
+    for (let row = 0; row < theState.mapSize.y; row++) {
         gameBoardHtml += `
             <div class="map-row">
         `;
-        for (let column = 0; column < state.mapSize.x; column++) {
+        for (let column = 0; column < theState.mapSize.x; column++) {
             let cellText = ''
-            if (state.robotPosition.x === column && state.robotPosition.y === row) {
+            if (theState.robotPosition.x === column && theState.robotPosition.y === row) {
                 cellText = 'A'
             }
             gameBoardHtml += `
@@ -72,6 +77,7 @@ function render() {
 
     let rootElement = document.querySelector('#game-board');
     rootElement.innerHTML = gameBoardHtml;
+    console.log(`history: ${state.history}`);
 }
 init();
-render();
+render(state);
