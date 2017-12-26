@@ -78,6 +78,7 @@ function onCommandUp(distance = 1) {
     if (!available) {
         // alert('Position [' + newPosition.x + ', ' + newPosition.y + '] is not invalid.');
         alert(`Position [${newPosition.x}, ${newPosition.y}] is not invalid.`);
+        return;
     }
     state = move(state, newPosition);
     render(state);
