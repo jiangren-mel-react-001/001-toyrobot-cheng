@@ -3,7 +3,7 @@ class Component {
         this.props = props;
     }
     render() {
-        return '';
+        return null;
     }
 }
 
@@ -13,30 +13,24 @@ class GameMap extends Component {
     }
 
     render() {
-        let gameMapHtml = `
-            <div class="game-map">
-        `;
-            for (let row = 0; row < this.props.state.mapSize.y; row++) {
-                gameMapHtml += `
-                <div class="map-row">
-            `;
-                for (let column = 0; column < this.props.state.mapSize.x; column++) {
-                    let cellText = ''
-                    if (this.props.state.robotPosition.x === column && this.props.state.robotPosition.y === row) {
-                        cellText = 'A'
-                    }
-                    gameMapHtml += `
-                    <div class="map-cell">${cellText}</div>
-                `;
+        let gameMap = document.createElement('div');
+        gameMap.setAttribute('class', 'game-map');
+        for (let row = 0; row < this.props.state.mapSize.y; row++) {
+            let aRow = document.createElement('div');
+            aRow.setAttribute('class', 'map-row');
+            for (let column = 0; column < this.props.state.mapSize.x; column++) {
+                let cellText = ''
+                if (this.props.state.robotPosition.x === column && this.props.state.robotPosition.y === row) {
+                    cellText = 'A'
                 }
-                gameMapHtml += `
-                </div>
-            `;
+                let aCell = document.createElement('div');
+                aCell.setAttribute('class', 'map-cell');
+                aCell.innerText = cellText;
+                aRow.appendChild(aCell);
             }
-            gameMapHtml += `
-            </div>
-        `;
-        return gameMapHtml;
+            gameMap.appendChild(aRow);
+        }
+        return gameMap;
     }
 }
 
@@ -90,14 +84,9 @@ function onCommandUp(distance = 1) {
 }
 function render(theState) {
     let gameMap = new GameMap({state: theState});
-    let gameControl = `
-        <div class="control-panel">
-            <button onclick="onCommandUp()">A</button>
-        </div>
-    `;
-
     let rootElement = document.querySelector('#game-board');
-    rootElement.innerHTML = gameMap.render() + gameControl;
+    rootElement.innerHTML = '';
+    rootElement.appendChild(gameMap.render());
 }
 init();
 render(state);
