@@ -1,3 +1,44 @@
+class Component {
+    constructor(props) {
+        this.props = props;
+    }
+    render() {
+        return '';
+    }
+}
+
+class GameMap extends Component {
+    constructor(props) {
+        super(props);
+    }
+
+    render() {
+        let gameMapHtml = `
+            <div class="game-map">
+        `;
+            for (let row = 0; row < this.props.state.mapSize.y; row++) {
+                gameMapHtml += `
+                <div class="map-row">
+            `;
+                for (let column = 0; column < this.props.state.mapSize.x; column++) {
+                    let cellText = ''
+                    if (this.props.state.robotPosition.x === column && this.props.state.robotPosition.y === row) {
+                        cellText = 'A'
+                    }
+                    gameMapHtml += `
+                    <div class="map-cell">${cellText}</div>
+                `;
+                }
+                gameMapHtml += `
+                </div>
+            `;
+            }
+            gameMapHtml += `
+            </div>
+        `;
+        return gameMapHtml;
+    }
+}
 
 const DIRECTION = {
     north: 'A', east: '->', south: 'V', west: '<-'
@@ -48,36 +89,15 @@ function onCommandUp(distance = 1) {
     render(state);
 }
 function render(theState) {
-    let gameBoardHtml = `
-        <div class="game-map">
-    `;
-    for (let row = 0; row < theState.mapSize.y; row++) {
-        gameBoardHtml += `
-            <div class="map-row">
-        `;
-        for (let column = 0; column < theState.mapSize.x; column++) {
-            let cellText = ''
-            if (theState.robotPosition.x === column && theState.robotPosition.y === row) {
-                cellText = 'A'
-            }
-            gameBoardHtml += `
-                <div class="map-cell">${cellText}</div>
-            `;
-        }
-        gameBoardHtml += `
-            </div>
-        `;
-    }
-    gameBoardHtml += `
-        </div>
+    let gameMap = new GameMap({state: theState});
+    let gameControl = `
         <div class="control-panel">
             <button onclick="onCommandUp()">A</button>
         </div>
     `;
 
     let rootElement = document.querySelector('#game-board');
-    rootElement.innerHTML = gameBoardHtml;
-    console.log(`history: ${state.history}`);
+    rootElement.innerHTML = gameMap.render() + gameControl;
 }
 init();
 render(state);
