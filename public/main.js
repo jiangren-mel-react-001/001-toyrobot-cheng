@@ -1,3 +1,9 @@
+
+ReactDOM.render(
+    React.createElement('h1', null, 'Hello Hi'),
+    document.getElementById('root')
+);
+
 class Component {
     constructor(props) {
         this.props = props;
@@ -47,7 +53,7 @@ var state = {
     toIndex: function () {
         return this.robotPosition.x + this.robotPosition.y * this.mapSize.y;
     },
-    history: [{x: 0, y: 3}]
+    history: [{ x: 0, y: 3 }]
 };
 availablePosition = (newPosition, mapSize) => {
     if (newPosition.x >= 0 && newPosition.x < mapSize.x
@@ -60,10 +66,12 @@ availablePosition = (newPosition, mapSize) => {
 }
 function move(theState, newPosition) {
     // let newState = Object.assign({}, theState, {robotPosition: newPosition});
-    let newState = {...theState, ...{
-        robotPosition: newPosition,
-        history: [...theState.history, newPosition]
-    }};
+    let newState = {
+        ...theState, ...{
+            robotPosition: newPosition,
+            history: [...theState.history, newPosition]
+        }
+    };
     return newState;
 }
 
@@ -71,8 +79,8 @@ function init() {
     // state.robotPosition.y = 3;
 }
 function onCommandUp(distance = 1) {
-    var {x: currentX, y: 
-        currentY} = state.robotPosition;
+    var { x: currentX, y:
+        currentY } = state.robotPosition;
     var newPosition = { x: currentX, y: currentY - distance };
     var available = availablePosition(newPosition, state.mapSize);
     if (!available) {
@@ -84,10 +92,10 @@ function onCommandUp(distance = 1) {
     render(state);
 }
 function render(theState) {
-    let gameMap = new GameMap({state: theState});
+    let gameMap = new GameMap({ state: theState });
     let rootElement = document.querySelector('#game-board');
     rootElement.innerHTML = '';
     rootElement.appendChild(gameMap.render());
 }
-init();
-render(state);
+// init();
+// render(state);
